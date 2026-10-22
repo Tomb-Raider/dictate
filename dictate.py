@@ -1,9 +1,9 @@
 # /// script
-# requires-python = ">=3.11"
-# dependencies = ["mlx-whisper==0.4.3", "sounddevice", "numpy"]
-# [tool.uv]
-# exclude-newer = "2026-10-22T00:00:00Z"
+# requires-python = ">=3.11,<3.13"
+# dependencies = ["mlx-whisper>=0.4", "sounddevice", "numpy"]
 # ///
+# Без exclude-newer: рабочие зеркала пакетов не отдают даты выкладки, и uv тогда отбрасывает все версии.
+# Python 3.12: под него готовые пакеты есть на любом зеркале.
 """Диктовка в буфер обмена. Whisper работает локально на Mac с M-чипом, без интернета.
 
 Запуск в Терминале:  dictate          (английский текст: dictate en)
