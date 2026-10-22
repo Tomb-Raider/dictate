@@ -2,7 +2,7 @@
 # Ставит диктовку на Mac с M-чипом без прав администратора: всё в домашней папке.
 # Одной командой:
 #   curl -fsSL https://raw.githubusercontent.com/Tomb-Raider/dictate/main/install.sh | zsh
-# Или из скачанной папки:  zsh install.sh
+# Или из скачанного ZIP:  zsh ~/Downloads/dictate-main/install.sh
 # Повторный запуск обновляет программу, словарь не трогает.
 
 main() {
