@@ -12,7 +12,8 @@ main() {
   local DEST="$HOME/Диктовка"
   local BIN="$HOME/.local/bin"
 
-  if [ "$(uname -m)" != "arm64" ]; then
+  # hw.optional.arm64 честно отвечает и тогда, когда Терминал запущен через Rosetta
+  if [ "$(sysctl -in hw.optional.arm64)" != "1" ]; then
     echo "Нужен Mac с M-чипом, а здесь Intel. Остановилась"; return 1
   fi
 
@@ -27,18 +28,19 @@ main() {
     [ -f "$DEST/словарь.txt" ] || curl -fsSL "$RAW/%D1%81%D0%BB%D0%BE%D0%B2%D0%B0%D1%80%D1%8C.txt" -o "$DEST/словарь.txt"
   fi
 
+  # Свой uv, а не тот, что уже есть в системе: чужой может быть собран для Intel или настроен иначе
   echo "2/4 Ставлю uv (менеджер Python, без прав администратора)"
-  local UV="$(command -v uv || true)"
-  [ -z "$UV" ] && [ -x "$BIN/uv" ] && UV="$BIN/uv"
-  if [ -z "$UV" ]; then
+  local UV="$BIN/uv"
+  if [ ! -x "$UV" ]; then
     curl -LsSf https://astral.sh/uv/install.sh | env UV_NO_MODIFY_PATH=1 sh
-    UV="$BIN/uv"
   fi
 
+  # Python строго для M-чипа: если в системе есть Python для Intel, uv иначе возьмёт его,
+  # а под Intel пакетов распознавания нет
   echo "3/4 Делаю команду dictate"
   cat > "$BIN/dictate" <<EOF
 #!/bin/zsh
-exec "$UV" run --quiet "$DEST/dictate.py" "\$@"
+exec "$UV" run --quiet --python cpython-3.12-macos-aarch64-none "$DEST/dictate.py" "\$@"
 EOF
   chmod +x "$BIN/dictate"
   cat > "$DEST/Диктовка.command" <<EOF
